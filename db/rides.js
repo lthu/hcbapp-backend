@@ -1,7 +1,10 @@
 const db = require('./dbconfig.js');
 
-const getAllRides = (req, res) => {
-    db.query('SELECT * FROM journeys LIMIT 10000 OFFSET 1', (err, result) => {
+
+// Get a list of ALL the rides.
+// To consider: is this the best practice as there are more than 1.6 million records in the database.
+const getAllRides = (res) => {
+    db.query('SELECT * FROM journeys;', (err, result) => {
     if (err)
         console.error(err);
     else
@@ -9,6 +12,7 @@ const getAllRides = (req, res) => {
     })
 }
 
+// Get ride details by id number.
 const getRideById = (req, res) => {
     const query = {
         text: 'SELECT * FROM journeys WHERE id = $1',
@@ -27,6 +31,8 @@ const getRideById = (req, res) => {
     })
 }
 
+
+// Get a list of all the stations: name and station_id?
 const getAllStations = (req, res) => {
     db.query('SELECT * FROM stations', (err, result) => {
     if (err)
@@ -36,6 +42,7 @@ const getAllStations = (req, res) => {
     })
 }
 
+// Get details of individual station by station_id number. 
 const getStationById = (req, res) => {
     const query = {
         text: 'SELECT * FROM stations WHERE station_id = $1',
