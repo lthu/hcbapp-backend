@@ -3,7 +3,7 @@ const db = require('./dbconfig.js');
 
 // Get a list of ALL the rides.
 // To consider: is this the best practice as there are more than 1.6 million records in the database.
-const getAllRides = (res) => {
+const getAllJourneys = (res) => {
     db.query('SELECT * FROM journeys;', (err, result) => {
     if (err)
         console.error(err);
@@ -13,7 +13,7 @@ const getAllRides = (res) => {
 }
 
 // Get ride details by id number.
-const getRideById = (req, res) => {
+const getJourneyById = (req, res) => {
     const query = {
         text: 'SELECT * FROM journeys WHERE id = $1',
         values: [req.params.id],
@@ -45,7 +45,7 @@ const getAllStations = (req, res) => {
 // Get details of individual station by station_id number. 
 const getStationById = (req, res) => {
     const query = {
-        text: 'SELECT * FROM stations WHERE station_id = $1',
+        text: 'SELECT S.station_id, S.name, COUNT(J.id) AS returned_journeys_total, (SELECT COUNT(*) FROM journeys WHERE departure_station_id = $1) AS departed_journeys_total, AVG(distance) AS avg_return_distance, (SELECT AVG(distance) FROM journeys WHERE departure_station_id = $1) AS avg_departure_distance ,S.address, S.city, S.operator, S.capacity, S.coordinate_x, S.coordinate_y FROM stations S LEFT JOIN journeys J ON S.station_id = J.return_station_id WHERE S.station_id = $1 GROUP BY S.station_id, S.name, S.address, S.city, S.operator, S.capacity, S.coordinate_x, S.coordinate_y',
         values: [req.params.id]
     }
     
@@ -63,8 +63,8 @@ const getStationById = (req, res) => {
 
 
 module.exports = {
-    getAllRides: getAllRides,
-    getRideById: getRideById,
+    getAllJourneys: getAllJourneys,
+    getJourneyById: getJourneyById,
     getStationById: getStationById,
     getAllStations: getAllStations,
 }
