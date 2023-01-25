@@ -2,6 +2,9 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const query = require('./db/journeys.js');
 const app = express();
+var cors = require('cors')
+app.use(cors())
+app.use(cors({origin: 'http://localhost:4200'}));
 
 app.use(bodyParser.json());
 
