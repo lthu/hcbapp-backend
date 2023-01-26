@@ -4,7 +4,7 @@ const db = require('./dbconfig.js');
 // Get a list of ALL the rides.
 // To consider: is this the best practice as there are more than 1.6 million records in the database.
 const getAllJourneys = (req,res) => {
-    db.query('SELECT j.id, departure_time, return_time, DEP.name AS departure_station_name, RET.name AS return_station_name, distance, duration FROM journeys J LEFT JOIN stations DEP ON J.departure_station_id = DEP.station_id LEFT JOIN stations RET ON J.return_station_id = RET.station_id LIMIT 100 OFFSET 0', (err, result) => {
+    db.query('SELECT j.id, departure_time, return_time, DEP.name AS departure_station_name, RET.name AS return_station_name, distance, duration FROM journeys J LEFT JOIN stations DEP ON J.departure_station_id = DEP.station_id LEFT JOIN stations RET ON J.return_station_id = RET.station_id LIMIT 1000 OFFSET 0', (err, result) => {
     if (err)
         console.error(err);
     else
@@ -15,7 +15,7 @@ const getAllJourneys = (req,res) => {
 // Get ride details by id number.
 const getJourneyById = (req, res) => {
     const query = {
-        text: 'SELECT departure_time, return_time, DEP.name AS departure_station_name, RET.name AS return_station_name, distance, duration FROM journeys J	LEFT JOIN stations DEP ON J.departure_station_id = DEP.station_id LEFT JOIN stations RET ON J.return_station_id = RET.station_id WHERE J.id = $1',
+        text: 'SELECT departure_time, return_time, DEP.name AS departure_station_name, RET.name AS return_station_name, distance, duration, DEP.coordinate_x as departure_station_coordinate_x, DEP.coordinate_y as departure_station_coordinate_y, RET.coordinate_x AS return_station_coordinate_x, RET.coordinate_y AS return_station_coordinate_y FROM journeys J	LEFT JOIN stations DEP ON J.departure_station_id = DEP.station_id LEFT JOIN stations RET ON J.return_station_id = RET.station_id WHERE J.id = $1;',
         values: [req.params.id],
     }
 
