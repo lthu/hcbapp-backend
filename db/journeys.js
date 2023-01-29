@@ -34,7 +34,7 @@ const getJourneyById = (req, res) => {
 
 // Get a list of all the stations: name and station_id?
 const getAllStations = (req, res) => {
-    db.query('SELECT * FROM stations', (err, result) => {
+    db.query('SELECT station_id, name, address, city, operator, capacity, coordinate_x, coordinate_y FROM stations', (err, result) => {
     if (err)
         console.error(err);
     else
@@ -42,10 +42,10 @@ const getAllStations = (req, res) => {
     })
 }
 
-// Get details of individual station by station_id number. 
+// Get details of individual station by station_id number.
 const getStationById = (req, res) => {
     const query = {
-        text: 'SELECT S.station_id, S.name, COUNT(J.id) AS returned_journeys_total, (SELECT COUNT(*) FROM journeys WHERE departure_station_id = $1) AS departed_journeys_total, AVG(distance) AS avg_return_distance, (SELECT AVG(distance) FROM journeys WHERE departure_station_id = $1) AS avg_departure_distance ,S.address, S.city, S.operator, S.capacity, S.coordinate_x, S.coordinate_y FROM stations S LEFT JOIN journeys J ON S.station_id = J.return_station_id WHERE S.station_id = $1 GROUP BY S.station_id, S.name, S.address, S.city, S.operator, S.capacity, S.coordinate_x, S.coordinate_y',
+        text: 'SELECT S.station_id, S.name, COUNT(J.id) AS returned_journeys_total, (SELECT COUNT(*) FROM journeys WHERE departure_station_id = $1) AS departed_journeys_total, AVG(distance) AS avg_return_distance, (SELECT AVG(distance) FROM journeys WHERE departure_station_id = $1) AS avg_departure_distance ,S.address, S.city, S.operator, S.capacity, S.coordinate_x, S.coordinate_y FROM stations S LEFT JOIN journeys J ON S.station_id = J.return_station_id	WHERE S.station_id = $1 GROUP BY S.station_id, S.name, S.address, S.city, S.operator, S.capacity, S.coordinate_x, S.coordinate_y',
         values: [req.params.id]
     }
     
