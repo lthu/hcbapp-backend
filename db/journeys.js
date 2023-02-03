@@ -45,7 +45,7 @@ const getAllStations = (req, res) => {
 // Get details of individual station by station_id number.
 const getStationById = (req, res) => {
     const query = {
-        text: 'SELECT S.station_id, S.name, COUNT(J.id) AS returned_journeys_total, (SELECT COUNT(*) FROM journeys WHERE departure_station_id = $1) AS departed_journeys_total, AVG(distance) AS avg_return_distance, (SELECT AVG(distance) FROM journeys WHERE departure_station_id = $1) AS avg_departure_distance ,S.address, S.city, S.operator, S.capacity, S.coordinate_x, S.coordinate_y FROM stations S LEFT JOIN journeys J ON S.station_id = J.return_station_id	WHERE S.station_id = $1 GROUP BY S.station_id, S.name, S.address, S.city, S.operator, S.capacity, S.coordinate_x, S.coordinate_y',
+        text: 'SELECT S.station_id, S.name, COUNT(J.id) AS returned_journeys_total, (SELECT COUNT(*) FROM journeys WHERE departure_station_id = $1) AS departed_journeys_total, AVG(distance) AS avg_return_distance, (SELECT AVG(distance) FROM journeys WHERE departure_station_id = $1) AS avg_departure_distance, AVG(duration) AS avg_duration, S.address, S.city, S.operator, S.capacity, S.coordinate_x, S.coordinate_y FROM stations S LEFT JOIN journeys J ON S.station_id = J.return_station_id	WHERE S.station_id = $1 GROUP BY S.station_id, S.name, S.address, S.city, S.operator, S.capacity, S.coordinate_x, S.coordinate_y',
         values: [req.params.id]
     }
     
@@ -60,9 +60,10 @@ const getStationById = (req, res) => {
         }
     })
 }
+
 const getTop5ReturnStationsById = (req, res) => {
     const query = {
-        text: 'SELECT S.station_id, S.name, count(J.return_station_id) as count FROM journeys J LEFT JOIN stations S ON J.return_station_id = S.station_id WHERE J.departure_station_id = $1 GROUP BY S.station_id, S.name ORDER BY count DESC LIMIT 6 OFFSET 0',
+        text: 'SELECT S.station_id, S.name, count(J.return_station_id) as count FROM journeys J LEFT JOIN stations S ON J.return_station_id = S.station_id WHERE J.departure_station_id = $1 GROUP BY S.station_id, S.name ORDER BY count DESC LIMIT 5 OFFSET 0',
         values: [req.params.id]
     }
     
@@ -79,7 +80,7 @@ const getTop5ReturnStationsById = (req, res) => {
 }
 const getTop5DepartureStationsById = (req, res) => {
     const query = {
-        text: 'SELECT S.name, count(J.departure_station_id) as count FROM journeys J LEFT JOIN stations S ON J.departure_station_id = S.station_id WHERE J.return_station_id = $1 GROUP BY S.name ORDER BY count DESC LIMIT 5 OFFSET 0',
+        text: 'SELECT S.station_id, S.name, count(J.departure_station_id) as count FROM journeys J LEFT JOIN stations S ON J.departure_station_id = S.station_id WHERE J.return_station_id = $1 GROUP BY S.station_id, S.name ORDER BY count DESC LIMIT 5 OFFSET 0',
         values: [req.params.id]
     }
     
@@ -101,5 +102,5 @@ module.exports = {
     getStationById: getStationById,
     getTop5ReturnStationsById: getTop5ReturnStationsById,
     getTop5DepartureStationsById: getTop5DepartureStationsById,
-    getAllStations: getAllStations,
+    getAllStations: getAllStations
 }
