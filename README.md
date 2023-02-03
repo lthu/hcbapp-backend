@@ -36,3 +36,7 @@ For importing data to PostgreSQL I used the builtin copy command for stations:
 And for the journeys:
 
 `COPY journeys(departure_time, return_time, departure_station_id, return_station_id, distance, duration) FROM '/path/to/data.csv' DELIMITER ',', FORMAT CSV;`
+
+
+### Additional
+For default there is a limit for amount of journeys fetched from db. To modify the limit look for SQL command under getAllJourneys function.
