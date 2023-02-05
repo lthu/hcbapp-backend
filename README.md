@@ -37,6 +37,14 @@ And for the journeys:
 
 `COPY journeys(departure_time, return_time, departure_station_id, return_station_id, distance, duration) FROM '/path/to/data.csv' DELIMITER ',', FORMAT CSV;`
 
+### Removing short journeys
+
+As we didn't want to include journeys that lasted less than 10 seconds or were shorter than 10 meters:
+
+`lauri=# SELECT COUNT(*) FROM journeys WHERE duration < 10 OR distance < 10;`
+
+resulted in 57957 rows that I simply deleted from the database.
+
 
 ### Additional
 For default there is a limit for amount of journeys fetched from db. To modify the limit look for SQL command under getAllJourneys function.
